@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"flag"
 	"musicapi/dblayer"
 	"musicapi/rest"
 	"musicapi/scan"
@@ -9,7 +10,8 @@ import (
 )
 
 func main() {
-	folder := os.Args[1]
+	folder := flag.String("path", "", "Specify the path of the music folder to scan")
+
 	log.Println("Looking for an existing database file...")
 
 	db, err := dblayer.NewDB("sqlite3", "music.db")
@@ -22,6 +24,9 @@ func main() {
 		db.Init()
 	}
 
-	scan.Scan(db, folder)
+	if *folder != "" {
+		scan.Scan(db, *folder)
+	}
+
 	log.Fatal(rest.RunAPI("127.0.0.1:8000"))
 }
