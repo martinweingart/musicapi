@@ -2,12 +2,21 @@
 package rest
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
 //RunAPIWithHandler runs the API and takes the host address as a parameter
 func RunAPIWithHandler(address string, h HandlerInterface) error {
 	r := gin.Default()
+
+    r.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"},
+        AllowMethods:     []string{"GET"},
+        AllowHeaders:     []string{"Origin"},
+        ExposeHeaders:    []string{"Content-Length"},
+	}))
+		
 	r.GET("/artists", h.GetArtists)
 	r.GET("/artists/:name", h.GetArtist)
 	r.GET("/albums", h.GetAlbums)
